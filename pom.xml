@@ -158,7 +158,8 @@
             <version>3.9.1.v20130905-0837</version>
             <scope>compile</scope>
         </dependency>
-		<dependency>
+		<!-- Remove dependency on Eclipse runtime and text -->
+		<!--<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>text</artifactId>
 			<version>3.2.0-v20060605-1400</version>
@@ -169,7 +170,7 @@
 			<artifactId>runtime</artifactId>
 			<version>3.10.0-v20140318-2214</version>
 			<scope>runtime</scope>
-		</dependency>
+		</dependency>-->
 		<dependency>
 			<groupId>org.eclipse.equinox</groupId>
 			<artifactId>common</artifactId>
