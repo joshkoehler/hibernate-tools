@@ -51,6 +51,7 @@ import org.hibernate.mapping.Value;
 import org.hibernate.type.ForeignKeyDirection;
 import org.hibernate.type.Type;
 import org.hibernate.type.TypeFactory;
+import org.hibernate.type.TypeResolver;
 import org.hibernate.util.JoinedIterator;
 import org.hibernate.util.StringHelper;
 
@@ -260,7 +261,7 @@ public class JDBCBinder {
             ForeignKey fk, Set processedColumns, boolean constrained, boolean inverseProperty) {
 
 
-        OneToOne value = new OneToOne(targetTable, rc);
+        OneToOne value = new OneToOne(mappings, targetTable, rc);
         value.setReferencedEntityName(revengStrategy
                 .tableToClassName(TableIdentifier.create(targetTable)));
 
@@ -309,7 +310,7 @@ public class JDBCBinder {
      * @param propName
      */
     private Property bindManyToOne(String propertyName, boolean mutable, Table table, ForeignKey fk, Set processedColumns) {
-        ManyToOne value = new ManyToOne(table);
+        ManyToOne value = new ManyToOne(mappings, table);
         value.setReferencedEntityName( fk.getReferencedEntityName() );
 		Iterator columns = fk.getColumnIterator();
         while ( columns.hasNext() ) {
@@ -407,7 +408,7 @@ public class JDBCBinder {
 
 		Table collectionTable = foreignKey.getTable();
 
-		Collection collection = new org.hibernate.mapping.Set(rc); // MASTER TODO: allow overriding collection type
+		Collection collection = new org.hibernate.mapping.Set(mappings, rc); // MASTER TODO: allow overriding collection type
 
 		collection.setCollectionTable(collectionTable); // CHILD+
 
@@ -423,7 +424,7 @@ public class JDBCBinder {
 
         if(manyToMany) {
 
-        	ManyToOne element = new ManyToOne( collection.getCollectionTable() );
+        	ManyToOne element = new ManyToOne(mappings, collection.getCollectionTable() );
         	//TODO: find the other foreignkey and choose the other side.
         	Iterator foreignKeyIterator = foreignKey.getTable().getForeignKeyIterator();
         	List keys = new ArrayList();
@@ -449,7 +450,7 @@ public class JDBCBinder {
         } else {
         	String tableToClassName = bindCollection( rc, foreignKey, null, collection );
 
-        	OneToMany oneToMany = new OneToMany( collection.getOwner() );
+        	OneToMany oneToMany = new OneToMany(mappings, collection.getOwner() );
 
 			oneToMany.setReferencedEntityName( tableToClassName ); // Child
         	mappings.addSecondPass( new JDBCCollectionSecondPass(mappings, collection) );
@@ -468,7 +469,7 @@ public class JDBCBinder {
 				.getValue();
 		}
 
-		SimpleValue keyValue = new DependantValue( collectionTable, referencedKeyValue );
+		SimpleValue keyValue = new DependantValue(mappings, collectionTable, referencedKeyValue );
 		//keyValue.setForeignKeyName("none"); // Avoid creating the foreignkey
 		//key.setCascadeDeleteEnabled( "cascade".equals( subnode.attributeValue("on-delete") ) );
 		Iterator columnIterator = foreignKey.getColumnIterator();
@@ -777,7 +778,7 @@ public class JDBCBinder {
 	}
 
 	private SimpleValue bindColumnToSimpleValue(Table table, Column column, Mapping mapping, boolean generatedIdentifier) {
-		SimpleValue value = new SimpleValue(table);
+		SimpleValue value = new SimpleValue(mappings, table);
 		value.addColumn(column);
 		value.setTypeName(guessAndAlignType(table, column, mapping, generatedIdentifier));
 		return value;
@@ -825,7 +826,7 @@ public class JDBCBinder {
 				column.getLength(), column.getPrecision(), column.getScale(), column.isNullable(), generatedIdentifier
 		);
 
-		Type wantedType = TypeFactory.heuristicType(preferredHibernateType);
+		Type wantedType = new TypeResolver().heuristicType(preferredHibernateType);
 
 		if(wantedType!=null) {
 			int[] wantedSqlTypes = wantedType.sqlTypes(mapping);
@@ -865,7 +866,7 @@ public class JDBCBinder {
 	 * @return
 	 */
 	private SimpleValue handleCompositeKey(RootClass rc, Set processedColumns, List keyColumns, Mapping mapping) {
-		Component pkc = new Component(rc);
+		Component pkc = new Component(mappings, rc);
         pkc.setMetaAttributes(Collections.EMPTY_MAP);
         pkc.setEmbedded(false);
 

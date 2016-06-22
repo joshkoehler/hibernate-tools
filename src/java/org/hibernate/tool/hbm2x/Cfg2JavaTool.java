@@ -37,6 +37,7 @@ import org.hibernate.tool.hbm2x.visitor.JavaTypeFromValueVisitor;
 import org.hibernate.type.PrimitiveType;
 import org.hibernate.type.Type;
 import org.hibernate.type.TypeFactory;
+import org.hibernate.type.TypeResolver;
 import org.hibernate.util.StringHelper;
 
 /**
@@ -373,7 +374,7 @@ public class Cfg2JavaTool {
 			Type type = null;
 			if(entry.getValue() instanceof String) {
 				try {
-					type = TypeFactory.heuristicType((String) entry.getValue());
+					type = new TypeResolver().heuristicType((String) entry.getValue());
 				} catch(Throwable t) {
 					type = null;
 					typename = (String) entry.getValue();

@@ -95,8 +95,10 @@ public class JDBCMetaDataConfiguration extends Configuration {
     }
 	    
     protected void parseMappingElement(Element subelement, String name) {
-        if(!ignoreconfigxmlmapppings ) {            
-            super.parseMappingElement(subelement, name);
+        if(!ignoreconfigxmlmapppings ) {
+
+						//Already private in main branch on github
+            //super.parseMappingElement(subelement, name);
         } 
         else {
             log.info("Ignoring " + name + " mapping");
