@@ -8,9 +8,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 import org.hibernate.MappingException;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.Mapping;
@@ -22,6 +19,9 @@ import org.hibernate.mapping.SimpleValue;
 import org.hibernate.mapping.Table;
 import org.hibernate.tool.JDBCMetaDataBinderTestCase;
 import org.hibernate.type.Type;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * @author max
